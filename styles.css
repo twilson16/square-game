@@ -10,7 +10,7 @@ h1 {
 }
 
 .canvasDiv {
-    max-width: 56%;
+    width: 600px;
     margin: 0 auto;
 }
 
