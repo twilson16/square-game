@@ -39,6 +39,7 @@ class Game {
     this.square = new Square(this)
     this.coin = new Coin(this)
     this.hazards = new Hazards(this)
+    this.hazardsArray = []
     this.score = 0
   }
 
@@ -52,6 +53,7 @@ class Game {
     }
     this.square.update()
     this.coin.update()
+    this.hazards.update()
   }
 
   draw () {

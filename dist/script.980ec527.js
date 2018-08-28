@@ -281,17 +281,21 @@ var Hazards = function () {
 
     this.game = game;
     this.pos = pos;
+    this.length = 240;
     this.center = {
-      x: 0,
-      y: 0
+      x: Math.floor(Math.random() * 240) - 15,
+      y: Math.floor(Math.random() * 240) + 15
+      // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
     };
   }
 
   _createClass(Hazards, [{
-    key: 'upate',
-    value: function upate() {
+    key: 'update',
+    value: function update() {
       // if (i = 0, i < 3, i++) {
-      //   return sendHazards()
+      // this.center.x += 2
+      this.sendHazards();
+
       // }
     }
   }, {
@@ -299,37 +303,36 @@ var Hazards = function () {
     value: function draw() {
       var context = this.game.context;
       context.fillStyle = _constants.COLORS.hazards;
-      context.fillRect(_constants.GRID_SIZE + 15, _constants.GRID_SIZE * 3 + 15, 30, 30);
+      context.fillRect(this.center.x - 15, this.center.y - 15, 30, 30);
     }
-
-    //   sendHazards () {
-    //     let sides = ['top', 'left', 'right', 'bottom']
-    //     let entrySide = sides[Math.floor(Math.random() * sides.length)]
-    //     let x, y, vx, vy
-    //     if (entrySide === 'top') {
-    //       x = Math.random() * entrySide
-    //       y = Math.random() * this.square.height
-    //       vx = Math.random() * 4 - 2
-    //       vy = Math.random() * 2
-    //     } else if (entrySide === 'left') {
-    //       x = Math.random() * this.square.width
-    //       y = Math.random() * this.square.height
-    //       vx = Math.random() * 2
-    //       vy = Math.random() * 4 - 2
-    //     } else if (entrySide === 'bottom') {
-    //       x = Math.random() * this.square.width
-    //       y = Math.random() * this.square.height
-    //       vx = Math.random() * 4 - 2
-    //       vy = Math.random() * -2
-    //     } else if (entrySide === 'right') {
-    //       x = Math.random() * this.square.width
-    //       y = Math.random() * this.square.height
-    //       vx = Math.random() * -2
-    //       vy = Math.random() * 4 - 2
-    //     }
-    //     this.hazard.push(new Hazards(this, {x: x, y: y}, {x: vx, y: vy}))
-    //   }
-
+  }, {
+    key: 'sendHazards',
+    value: function sendHazards() {
+      // let sides = ['top', 'left', 'right', 'bottom']
+      var entrySide = Math.floor(Math.random() * 3 + 1);
+      var x = void 0,
+          y = void 0,
+          vx = void 0,
+          vy = void 0;
+      if (entrySide === 1) {
+        x = Math.floor(Math.random() * 240 + 90);
+        y = 0;
+        vx = this.center.x += 2;
+      } else if (entrySide === 2) {
+        x = Math.floor(Math.random() * 240 + 90);
+        y = 0;
+        vy = this.center.y += 2;
+      } else if (entrySide === 3) {
+        x = 500;
+        y = Math.floor(Math.random() * 240 + 90);
+        vx = this.center.x -= 2;
+      } else if (entrySide === 4) {
+        x = Math.floor(Math.random() * 240 + 90);
+        y = 500;
+        vy = this.center.y -= 2;
+      }
+      this.game.hazardsArray.push(new Hazards(this, { x: x, y: y }, { x: vx, y: vy }));
+    }
   }]);
 
   return Hazards;
@@ -473,6 +476,7 @@ var Game = function () {
     this.square = new _Square2.default(this);
     this.coin = new _Coin2.default(this);
     this.hazards = new _Hazards2.default(this);
+    this.hazardsArray = [];
     this.score = 0;
   }
 
@@ -488,6 +492,7 @@ var Game = function () {
       }
       this.square.update();
       this.coin.update();
+      this.hazards.update();
     }
   }, {
     key: 'draw',
@@ -643,7 +648,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58108' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52900' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

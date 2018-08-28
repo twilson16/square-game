@@ -7,51 +7,51 @@ class Hazards {
   constructor (game, pos) {
     this.game = game
     this.pos = pos
+    this.length = 240
     this.center = {
-      x: 0,
-      y: 0
+      x: Math.floor(Math.random() * 240) - 15,
+      y: Math.floor(Math.random() * 240) + 15
     }
+    // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
   }
 
-  upate () {
+  update () {
     // if (i = 0, i < 3, i++) {
-    //   return sendHazards()
+    // this.center.x += 2
+    this.sendHazards()
+    
     // }
   }
 
   draw () {
     let context = this.game.context
     context.fillStyle = COLORS.hazards
-    context.fillRect(GRID_SIZE + 15, GRID_SIZE * 3 + 15, 30, 30)
+    context.fillRect(this.center.x - 15, this.center.y - 15, 30, 30)
   }
 
-//   sendHazards () {
-//     let sides = ['top', 'left', 'right', 'bottom']
-//     let entrySide = sides[Math.floor(Math.random() * sides.length)]
-//     let x, y, vx, vy
-//     if (entrySide === 'top') {
-//       x = Math.random() * entrySide
-//       y = Math.random() * this.square.height
-//       vx = Math.random() * 4 - 2
-//       vy = Math.random() * 2
-//     } else if (entrySide === 'left') {
-//       x = Math.random() * this.square.width
-//       y = Math.random() * this.square.height
-//       vx = Math.random() * 2
-//       vy = Math.random() * 4 - 2
-//     } else if (entrySide === 'bottom') {
-//       x = Math.random() * this.square.width
-//       y = Math.random() * this.square.height
-//       vx = Math.random() * 4 - 2
-//       vy = Math.random() * -2
-//     } else if (entrySide === 'right') {
-//       x = Math.random() * this.square.width
-//       y = Math.random() * this.square.height
-//       vx = Math.random() * -2
-//       vy = Math.random() * 4 - 2
-//     }
-//     this.hazard.push(new Hazards(this, {x: x, y: y}, {x: vx, y: vy}))
-//   }
+  sendHazards () {
+    // let sides = ['top', 'left', 'right', 'bottom']
+    let entrySide = Math.floor((Math.random() * 3) + 1)
+    let x, y, vx, vy
+    if (entrySide === 1) {      
+      x = Math.floor((Math.random() * 240) + 90)
+      y = 0
+      vx = this.center.x += 2
+    } else if (entrySide === 2) {
+      x = Math.floor((Math.random() * 240) + 90)
+      y = 0
+      vy = this.center.y += 2
+    } else if (entrySide === 3) {
+      x = 500
+      y = Math.floor((Math.random() * 240) + 90)
+      vx = this.center.x -= 2
+    } else if (entrySide === 4) {
+      x = Math.floor((Math.random() * 240) + 90)
+      y = 500
+      vy = this.center.y -= 2
+    }
+    this.game.hazardsArray.push(new Hazards(this, {x: x, y: y}, {x: vx, y: vy}))
+  }
 }
 
 export default Hazards
