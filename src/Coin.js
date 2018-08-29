@@ -1,7 +1,7 @@
 // import Keyboarder from './keyboarder'
 // import Square from './Square'
 import {COLORS, GRID_SIZE} from './constants'
-// import Hazards from './Hazards'
+// import Hazard from './Hazard'
 // import {colliding} from './Game'
 
 class Coin {

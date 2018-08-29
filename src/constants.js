@@ -6,6 +6,6 @@ export const COLORS = {
   background: '#243196',
   square: '#FFFFFF',
   wall: '#FFFFFF',
-  hazards: '#000000',
+  hazard: '#000000',
   coin: '#eac610'
 }

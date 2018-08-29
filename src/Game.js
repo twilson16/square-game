@@ -1,7 +1,7 @@
 // import Keyboarder from './keyboarder'
 import Square from './Square'
 import {COLORS, GRID_SIZE} from './constants'
-import Hazards from './Hazards'
+import Hazard from './Hazard'
 import Coin from './Coin'
 
 function isSamePos (pos, posSquare) {
@@ -38,7 +38,6 @@ class Game {
     this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
     this.square = new Square(this)
     this.coin = new Coin(this)
-    this.hazards = new Hazards(this)
     this.hazardsArray = []
     this.score = 0
   }
@@ -53,7 +52,12 @@ class Game {
     }
     this.square.update()
     this.coin.update()
-    this.hazards.update()
+    while (this.hazardsArray.length < 2) {
+      this.sendHazards()
+    }
+    for (let hazard of this.hazardsArray) {
+      hazard.update()
+    } 
   }
 
   draw () {
@@ -66,7 +70,9 @@ class Game {
 
     this.square.draw()
     this.coin.draw()
-    this.hazards.draw()
+    for (let hazard of this.hazardsArray) {
+      hazard.draw()
+    }
 
     this.context.font = '30px courier'
     this.context.fillStyle = COLORS.wall
@@ -137,6 +143,34 @@ class Game {
     this.coin = this.coin.filter(function (coin) {
       return !isSamePos(pos, coin)
     })
+  }
+
+  sendHazards () {
+    // let sides = ['top', 'left', 'right', 'bottom']
+    let entrySide = Math.floor((Math.random() * 4) + 1)
+    let x, y, vx, vy
+    if (entrySide === 1) {
+      x = Math.floor(Math.random() * 4) * 60 + 210
+      y = 0
+      vx = 0
+      vy = 2
+    } else if (entrySide === 2) {
+      x = 0
+      y = Math.floor(Math.random() * 4) * 60 + 210
+      vx = 2
+      vy = 0
+    } else if (entrySide === 3) {
+      x = 600
+      y = Math.floor(Math.random() * 4) * 60 + 210
+      vx = -2
+      vy = 0
+    } else if (entrySide === 4) {
+      x = Math.floor(Math.random() * 4) * 60 + 210
+      y = 600
+      vx = 0
+      vy = -2
+    }
+    this.hazardsArray.push(new Hazard(this, {x: x, y: y}, {x: vx, y: vy}))
   }
 }
 

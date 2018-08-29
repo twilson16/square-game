@@ -116,7 +116,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // import Square from './Square'
 // import {COLORS, GRID_SIZE} from './constants'
-// import Hazards from './Hazards'
+// import Hazard from './Hazard'
 // import Coin from './Coin'
 
 var Keyboarder = function () {
@@ -176,7 +176,7 @@ var COLORS = exports.COLORS = {
   background: '#243196',
   square: '#FFFFFF',
   wall: '#FFFFFF',
-  hazards: '#000000',
+  hazard: '#000000',
   coin: '#eac610'
 };
 },{}],"src/Square.js":[function(require,module,exports) {
@@ -198,7 +198,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// import Hazards from './Hazards'
+// import Hazard from './Hazard'
 // import Coin from './Coin'
 
 var Square = function () {
@@ -258,7 +258,7 @@ var Square = function () {
 }();
 
 exports.default = Square;
-},{"./keyboarder":"src/keyboarder.js","./constants":"src/constants.js"}],"src/Hazards.js":[function(require,module,exports) {
+},{"./keyboarder":"src/keyboarder.js","./constants":"src/constants.js"}],"src/Hazard.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -275,70 +275,37 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // import Coin from './Coin'
 
-var Hazards = function () {
-  function Hazards(game, pos) {
-    _classCallCheck(this, Hazards);
+var Hazard = function () {
+  function Hazard(game, pos, vel) {
+    _classCallCheck(this, Hazard);
 
     this.game = game;
-    this.pos = pos;
+    this.velocity = vel;
     this.length = 240;
-    this.center = {
-      x: Math.floor(Math.random() * 240) - 15,
-      y: Math.floor(Math.random() * 240) + 15
-      // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
-    };
+    this.center = pos;
+
+    // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
   }
 
-  _createClass(Hazards, [{
+  _createClass(Hazard, [{
     key: 'update',
     value: function update() {
-      // if (i = 0, i < 3, i++) {
-      // this.center.x += 2
-      this.sendHazards();
-
-      // }
+      this.center.x += this.velocity.x;
+      this.center.y += this.velocity.y;
     }
   }, {
     key: 'draw',
     value: function draw() {
       var context = this.game.context;
-      context.fillStyle = _constants.COLORS.hazards;
+      context.fillStyle = _constants.COLORS.hazard;
       context.fillRect(this.center.x - 15, this.center.y - 15, 30, 30);
-    }
-  }, {
-    key: 'sendHazards',
-    value: function sendHazards() {
-      // let sides = ['top', 'left', 'right', 'bottom']
-      var entrySide = Math.floor(Math.random() * 3 + 1);
-      var x = void 0,
-          y = void 0,
-          vx = void 0,
-          vy = void 0;
-      if (entrySide === 1) {
-        x = Math.floor(Math.random() * 240 + 90);
-        y = 0;
-        vx = this.center.x += 2;
-      } else if (entrySide === 2) {
-        x = Math.floor(Math.random() * 240 + 90);
-        y = 0;
-        vy = this.center.y += 2;
-      } else if (entrySide === 3) {
-        x = 500;
-        y = Math.floor(Math.random() * 240 + 90);
-        vx = this.center.x -= 2;
-      } else if (entrySide === 4) {
-        x = Math.floor(Math.random() * 240 + 90);
-        y = 500;
-        vy = this.center.y -= 2;
-      }
-      this.game.hazardsArray.push(new Hazards(this, { x: x, y: y }, { x: vx, y: vy }));
     }
   }]);
 
-  return Hazards;
+  return Hazard;
 }();
 
-exports.default = Hazards;
+exports.default = Hazard;
 },{"./constants":"src/constants.js"}],"src/Coin.js":[function(require,module,exports) {
 'use strict';
 
@@ -354,7 +321,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // import Square from './Square'
 
 
-// import Hazards from './Hazards'
+// import Hazard from './Hazard'
 // import {colliding} from './Game'
 
 var Coin = function () {
@@ -404,9 +371,9 @@ var _Square2 = _interopRequireDefault(_Square);
 
 var _constants = require('./constants');
 
-var _Hazards = require('./Hazards');
+var _Hazard = require('./Hazard');
 
-var _Hazards2 = _interopRequireDefault(_Hazards);
+var _Hazard2 = _interopRequireDefault(_Hazard);
 
 var _Coin = require('./Coin');
 
@@ -475,7 +442,6 @@ var Game = function () {
     this.squares = { x: this.size.width / _constants.GRID_SIZE, y: this.size.height / _constants.GRID_SIZE };
     this.square = new _Square2.default(this);
     this.coin = new _Coin2.default(this);
-    this.hazards = new _Hazards2.default(this);
     this.hazardsArray = [];
     this.score = 0;
   }
@@ -492,7 +458,33 @@ var Game = function () {
       }
       this.square.update();
       this.coin.update();
-      this.hazards.update();
+      while (this.hazardsArray.length < 2) {
+        this.sendHazards();
+      }
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = this.hazardsArray[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var hazard = _step2.value;
+
+          hazard.update();
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
     }
   }, {
     key: 'draw',
@@ -506,7 +498,30 @@ var Game = function () {
 
       this.square.draw();
       this.coin.draw();
-      this.hazards.draw();
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = this.hazardsArray[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var hazard = _step3.value;
+
+          hazard.draw();
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
 
       this.context.font = '30px courier';
       this.context.fillStyle = _constants.COLORS.wall;
@@ -589,6 +604,38 @@ var Game = function () {
         return !isSamePos(pos, coin);
       });
     }
+  }, {
+    key: 'sendHazards',
+    value: function sendHazards() {
+      // let sides = ['top', 'left', 'right', 'bottom']
+      var entrySide = Math.floor(Math.random() * 4 + 1);
+      var x = void 0,
+          y = void 0,
+          vx = void 0,
+          vy = void 0;
+      if (entrySide === 1) {
+        x = Math.floor(Math.random() * 4) * 60 + 210;
+        y = 0;
+        vx = 0;
+        vy = 2;
+      } else if (entrySide === 2) {
+        x = 0;
+        y = Math.floor(Math.random() * 4) * 60 + 210;
+        vx = 2;
+        vy = 0;
+      } else if (entrySide === 3) {
+        x = 600;
+        y = Math.floor(Math.random() * 4) * 60 + 210;
+        vx = -2;
+        vy = 0;
+      } else if (entrySide === 4) {
+        x = Math.floor(Math.random() * 4) * 60 + 210;
+        y = 600;
+        vx = 0;
+        vy = -2;
+      }
+      this.hazardsArray.push(new _Hazard2.default(this, { x: x, y: y }, { x: vx, y: vy }));
+    }
   }]);
 
   return Game;
@@ -604,7 +651,7 @@ var Game = function () {
 // directions at bottom and high score
 
 exports.default = Game;
-},{"./Square":"src/Square.js","./constants":"src/constants.js","./Hazards":"src/Hazards.js","./Coin":"src/Coin.js"}],"script.js":[function(require,module,exports) {
+},{"./Square":"src/Square.js","./constants":"src/constants.js","./Hazard":"src/Hazard.js","./Coin":"src/Coin.js"}],"script.js":[function(require,module,exports) {
 'use strict';
 
 var _Game = require('./src/Game');
