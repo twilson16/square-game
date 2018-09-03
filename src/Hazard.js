@@ -1,6 +1,6 @@
 // import Keyboarder from './keyboarder'
 // import Square from './Square'
-import {COLORS, GRID_SIZE} from './constants'
+import {COLORS} from './constants'
 // import Coin from './Coin'
 
 class Hazard {
@@ -9,7 +9,8 @@ class Hazard {
     this.velocity = vel
     this.length = 240
     this.center = pos
-  
+    this.size = {x: 30, y: 30}
+
     // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
   }
 
@@ -21,7 +22,7 @@ class Hazard {
   draw () {
     let context = this.game.context
     context.fillStyle = COLORS.hazard
-    context.fillRect(this.center.x - 15, this.center.y - 15, 30, 30)
+    context.fillRect(this.center.x - 15, this.center.y - 15, this.size.x, this.size.y)
   }
 }
 

@@ -209,6 +209,7 @@ var Square = function () {
 
     this.game = game;
     this.pos = { x: 0, y: 3 };
+    this.size = { x: 50, y: 50 };
     this.keyboarder = new _keyboarder2.default();
     this.keyboarder.on(_keyboarder2.default.KEYS.LEFT, function () {
       _this.moveSquare('left');
@@ -232,7 +233,7 @@ var Square = function () {
     value: function draw() {
       var context = this.game.context;
       context.fillStyle = _constants.COLORS.square;
-      context.fillRect(_constants.GRID_SIZE * (3 + this.pos.x) + 5, _constants.GRID_SIZE * (3 + this.pos.y) + 5, 50, 50);
+      context.fillRect(_constants.GRID_SIZE * (3 + this.pos.x) + 5, _constants.GRID_SIZE * (3 + this.pos.y) + 5, this.size.x, this.size.y);
     }
   }, {
     key: 'moveSquare',
@@ -251,6 +252,14 @@ var Square = function () {
 
       this.pos.x = Math.min(Math.max(this.pos.x, 0), 3);
       this.pos.y = Math.min(Math.max(this.pos.y, 0), 3);
+    }
+  }, {
+    key: 'center',
+    get: function get() {
+      return {
+        x: _constants.GRID_SIZE * (3 + this.pos.x) + 5 + this.size.x / 2,
+        y: _constants.GRID_SIZE * (3 + this.pos.y) + 5 + this.size.y / 2
+      };
     }
   }]);
 
@@ -283,8 +292,10 @@ var Hazard = function () {
     this.velocity = vel;
     this.length = 240;
     this.center = pos;
+    this.size = { x: 30, y: 30
 
-    // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
+      // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
+    };
   }
 
   _createClass(Hazard, [{
@@ -298,7 +309,7 @@ var Hazard = function () {
     value: function draw() {
       var context = this.game.context;
       context.fillStyle = _constants.COLORS.hazard;
-      context.fillRect(this.center.x - 15, this.center.y - 15, 30, 30);
+      context.fillRect(this.center.x - 15, this.center.y - 15, this.size.x, this.size.y);
     }
   }]);
 
@@ -419,16 +430,6 @@ function doesIntersectWithSquare(pos, posSquare) {
   return false;
 }
 
-// export function colliding (b1, b2) {
-//   return !(
-//     b1 === b2 ||
-//         b1.center.x + b1.size.x / 2 < b2.center.x - b2.size.x / 2 ||
-//         b1.center.y + b1.size.y / 2 < b2.center.y - b2.size.y / 2 ||
-//         b1.center.x - b1.size.x / 2 > b2.center.x + b2.size.x / 2 ||
-//         b1.center.y - b1.size.y / 2 > b2.center.y + b2.size.y / 2
-//   )
-// }
-
 var Game = function () {
   function Game() {
     _classCallCheck(this, Game);
@@ -439,7 +440,10 @@ var Game = function () {
       width: this.canvas.width,
       height: this.canvas.height
     };
-    this.squares = { x: this.size.width / _constants.GRID_SIZE, y: this.size.height / _constants.GRID_SIZE };
+    this.squares = {
+      x: this.size.width / _constants.GRID_SIZE,
+      y: this.size.height / _constants.GRID_SIZE
+    };
     this.square = new _Square2.default(this);
     this.coin = new _Coin2.default(this);
     this.hazardsArray = [];
@@ -449,6 +453,8 @@ var Game = function () {
   _createClass(Game, [{
     key: 'update',
     value: function update() {
+      var _this = this;
+
       if (isSamePos(this.square.pos, this.coin.pos)) {
         this.score += 1;
         this.coin.pos = {
@@ -458,7 +464,8 @@ var Game = function () {
       }
       this.square.update();
       this.coin.update();
-      while (this.hazardsArray.length < 2) {
+
+      while (this.hazardsArray.length < 3) {
         this.sendHazards();
       }
       var _iteratorNormalCompletion2 = true;
@@ -485,28 +492,20 @@ var Game = function () {
           }
         }
       }
-    }
-  }, {
-    key: 'draw',
-    value: function draw() {
-      this.context.clearRect(0, 0, this.size.width, this.size.height);
 
-      this.background();
-      this.grid();
-      this.border();
-      this.drawScore();
-
-      this.square.draw();
-      this.coin.draw();
       var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
       var _iteratorError3 = undefined;
 
       try {
         for (var _iterator3 = this.hazardsArray[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var hazard = _step3.value;
+          var _hazard = _step3.value;
 
-          hazard.draw();
+          if (collision(this.square, _hazard)) {
+            console.log("collision!");
+            this.score = 0;
+            _hazard.hit = true;
+          }
         }
       } catch (err) {
         _didIteratorError3 = true;
@@ -523,6 +522,47 @@ var Game = function () {
         }
       }
 
+      this.hazardsArray = this.hazardsArray.filter(function (hazard) {
+        return !hazard.hit && hazard.center.x >= 0 && hazard.center.x <= _this.size.width && hazard.center.y >= 0 && hazard.center.y <= _this.size.height;
+      });
+    }
+  }, {
+    key: 'draw',
+    value: function draw() {
+      this.context.clearRect(0, 0, this.size.width, this.size.height);
+
+      this.background();
+      // this.grid()
+      this.border();
+      this.drawScore();
+
+      this.square.draw();
+      this.coin.draw();
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        for (var _iterator4 = this.hazardsArray[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var hazard = _step4.value;
+
+          hazard.draw();
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+
       this.context.font = '30px courier';
       this.context.fillStyle = _constants.COLORS.wall;
       this.context.fillText('use arrow keys to take the coin', _constants.GRID_SIZE * 1, _constants.GRID_SIZE * 9, _constants.GRID_SIZE * 8);
@@ -530,13 +570,13 @@ var Game = function () {
   }, {
     key: 'tick',
     value: function tick() {
-      var _this = this;
+      var _this2 = this;
 
       this.ticks++;
       this.update();
       this.draw();
       window.requestAnimationFrame(function () {
-        return _this.tick();
+        return _this2.tick();
       });
     }
   }, {
@@ -634,21 +674,22 @@ var Game = function () {
         vx = 0;
         vy = -2;
       }
-      this.hazardsArray.push(new _Hazard2.default(this, { x: x, y: y }, { x: vx, y: vy }));
+      this.hazardsArray.push(new _Hazard2.default(this, {
+        x: x,
+        y: y
+      }, {
+        x: vx,
+        y: vy
+      }));
     }
   }]);
 
   return Game;
 }();
 
-// make border solid for square and coin
-// square moves on key press
-// coin disappears when square gets to it and adds to score
-// randomly generate coin location within border
-// black squares move across the screen randomly
-// black squares kill you when they hit you and score back to 0, but remain in same spot
-
-// directions at bottom and high score
+function collision(b1, b2) {
+  return !(b1 === b2 || b1.center.x + b1.size.x / 2 < b2.center.x - b2.size.x / 2 || b1.center.y + b1.size.y / 2 < b2.center.y - b2.size.y / 2 || b1.center.x - b1.size.x / 2 > b2.center.x + b2.size.x / 2 || b1.center.y - b1.size.y / 2 > b2.center.y + b2.size.y / 2);
+}
 
 exports.default = Game;
 },{"./Square":"src/Square.js","./constants":"src/constants.js","./Hazard":"src/Hazard.js","./Coin":"src/Coin.js"}],"script.js":[function(require,module,exports) {
@@ -695,7 +736,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52900' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55846' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

@@ -1,6 +1,9 @@
 // import Keyboarder from './keyboarder'
 import Square from './Square'
-import {COLORS, GRID_SIZE} from './constants'
+import {
+  COLORS,
+  GRID_SIZE
+} from './constants'
 import Hazard from './Hazard'
 import Coin from './Coin'
 
@@ -17,16 +20,6 @@ function doesIntersectWithSquare (pos, posSquare) {
   return false
 }
 
-// export function colliding (b1, b2) {
-//   return !(
-//     b1 === b2 ||
-//         b1.center.x + b1.size.x / 2 < b2.center.x - b2.size.x / 2 ||
-//         b1.center.y + b1.size.y / 2 < b2.center.y - b2.size.y / 2 ||
-//         b1.center.x - b1.size.x / 2 > b2.center.x + b2.size.x / 2 ||
-//         b1.center.y - b1.size.y / 2 > b2.center.y + b2.size.y / 2
-//   )
-// }
-
 class Game {
   constructor () {
     this.canvas = document.getElementById('screen')
@@ -35,7 +28,10 @@ class Game {
       width: this.canvas.width,
       height: this.canvas.height
     }
-    this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
+    this.squares = {
+      x: this.size.width / GRID_SIZE,
+      y: this.size.height / GRID_SIZE
+    }
     this.square = new Square(this)
     this.coin = new Coin(this)
     this.hazardsArray = []
@@ -52,19 +48,32 @@ class Game {
     }
     this.square.update()
     this.coin.update()
-    while (this.hazardsArray.length < 2) {
+
+    while (this.hazardsArray.length < 3) {
       this.sendHazards()
     }
     for (let hazard of this.hazardsArray) {
       hazard.update()
-    } 
+    }
+    
+    for (let hazard of this.hazardsArray) {
+      if (collision(this.square, hazard)) {
+        console.log("collision!")
+        this.score = 0
+        hazard.hit = true
+      }
+    }
+
+    this.hazardsArray = this.hazardsArray.filter((hazard) => {
+      return !hazard.hit && hazard.center.x >= 0 && hazard.center.x <= this.size.width && hazard.center.y >= 0 && hazard.center.y <= this.size.height
+    })
   }
 
   draw () {
     this.context.clearRect(0, 0, this.size.width, this.size.height)
 
     this.background()
-    this.grid()
+    // this.grid()
     this.border()
     this.drawScore()
 
@@ -135,7 +144,7 @@ class Game {
       }
 
       foundValidPos = !(doesIntersectWithSquare(pos, this.coin) ||
-                        doesIntersectWithSquare(pos, this.square))
+        doesIntersectWithSquare(pos, this.square))
     }
   }
 
@@ -170,17 +179,24 @@ class Game {
       vx = 0
       vy = -2
     }
-    this.hazardsArray.push(new Hazard(this, {x: x, y: y}, {x: vx, y: vy}))
+    this.hazardsArray.push(new Hazard(this, {
+      x: x,
+      y: y
+    }, {
+      x: vx,
+      y: vy
+    }))
   }
 }
 
-// make border solid for square and coin
-// square moves on key press
-// coin disappears when square gets to it and adds to score
-// randomly generate coin location within border
-// black squares move across the screen randomly
-// black squares kill you when they hit you and score back to 0, but remain in same spot
-
-// directions at bottom and high score
+function collision (b1, b2) {
+  return !(
+    b1 === b2 ||
+    b1.center.x + b1.size.x / 2 < b2.center.x - b2.size.x / 2 ||
+    b1.center.y + b1.size.y / 2 < b2.center.y - b2.size.y / 2 ||
+    b1.center.x - b1.size.x / 2 > b2.center.x + b2.size.x / 2 ||
+    b1.center.y - b1.size.y / 2 > b2.center.y + b2.size.y / 2
+  )
+}
 
 export default Game
