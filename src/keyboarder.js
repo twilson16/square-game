@@ -1,3 +1,8 @@
+// import Square from './Square'
+// import {COLORS, GRID_SIZE} from './constants'
+// import Hazard from './Hazard'
+// import Coin from './Coin'
+
 class Keyboarder {
   constructor () {
     this.keyState = {}
@@ -24,4 +29,12 @@ class Keyboarder {
   }
 }
 
-Keyboarder.KEYS = { LEFT: 37, RIGHT: 39, UP: 38, DOWN: 40, S: 83 }
+Keyboarder.KEYS = {
+  LEFT: 37,
+  RIGHT: 39,
+  UP: 38,
+  DOWN: 40,
+  S: 83
+}
+
+export default Keyboarder
