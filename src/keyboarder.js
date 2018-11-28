@@ -1,8 +1,3 @@
-// import Square from './Square'
-// import {COLORS, GRID_SIZE} from './constants'
-// import Hazard from './Hazard'
-// import Coin from './Coin'
-
 class Keyboarder {
   constructor () {
     this.keyState = {}

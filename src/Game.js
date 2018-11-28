@@ -1,4 +1,3 @@
-// import Keyboarder from './keyboarder'
 import Square from './Square'
 import {
   COLORS,

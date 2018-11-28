@@ -1,7 +1,5 @@
-// import Keyboarder from './keyboarder'
-// import Square from './Square'
 import {COLORS} from './constants'
-// import Coin from './Coin'
+
 
 class Hazard {
   constructor (game, pos, vel) {
@@ -10,8 +8,6 @@ class Hazard {
     this.length = 240
     this.center = pos
     this.size = {x: 30, y: 30}
-
-    // this.squares = { x: this.size.width / GRID_SIZE, y: this.size.height / GRID_SIZE }
   }
 
   update () {
