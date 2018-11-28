@@ -1,7 +1,5 @@
 import Keyboarder from './keyboarder'
 import {COLORS, GRID_SIZE} from './constants'
-// import Hazard from './Hazard'
-// import Coin from './Coin'
 
 class Square {
   constructor (game, pos) {

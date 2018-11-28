@@ -1,4 +1,3 @@
-// import Keyboarder from './keyboarder'
 import Square from './Square'
 import {
   COLORS,
@@ -58,7 +57,6 @@ class Game {
     
     for (let hazard of this.hazardsArray) {
       if (collision(this.square, hazard)) {
-        console.log("collision!")
         this.score = 0
         hazard.hit = true
       }
@@ -155,7 +153,6 @@ class Game {
   }
 
   sendHazards () {
-    // let sides = ['top', 'left', 'right', 'bottom']
     let entrySide = Math.floor((Math.random() * 4) + 1)
     let x, y, vx, vy
     if (entrySide === 1) {

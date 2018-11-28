@@ -502,7 +502,6 @@ var Game = function () {
           var _hazard = _step3.value;
 
           if (collision(this.square, _hazard)) {
-            console.log("collision!");
             this.score = 0;
             _hazard.hit = true;
           }
@@ -647,7 +646,6 @@ var Game = function () {
   }, {
     key: 'sendHazards',
     value: function sendHazards() {
-      // let sides = ['top', 'left', 'right', 'bottom']
       var entrySide = Math.floor(Math.random() * 4 + 1);
       var x = void 0,
           y = void 0,
@@ -736,7 +734,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55846' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '60741' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

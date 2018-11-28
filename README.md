@@ -16,3 +16,12 @@ Your job is to implement this game in JavaScript. You can use external libraries
 
 * [Game project from _Eloquent JavaScript_](https://eloquentjavascript.net/3rd_edition/16_game.html)
 * [Lessmilk Game Tutorials](http://www.lessmilk.com/)
+
+## To Run Locally
+
+* Clone Repo and run using the following command line input:
+
+```
+$ parcel index.html
+```
+* Then click the localhost link provided to play! 
